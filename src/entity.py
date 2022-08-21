@@ -10,4 +10,3 @@ class entity:
     self.rect = pygame.Rect(position, size)
   def draw(self, surface):
     pygame.draw.rect(surface, self.color, self.rect)
-    self.rect = pygame.Rect(self.position, self.size)
