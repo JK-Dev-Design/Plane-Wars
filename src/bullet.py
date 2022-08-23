@@ -1,20 +1,14 @@
 import pygame
 import math
+import entity
 
-class bullet:
-    def __init__(self, position, damage, speed, type, size, color, velocity=pygame.Vector2(0, 5)):
-      self.position = position
+class bullet(entity.entity):
+    def __init__(self, position, damage, speed, type, image, velocity=pygame.Vector2(0, 5,)):
       self.damage = damage
-      self.speed = speed
-      self.type = type
-      self.size = size
-      self.color = color
       self.velocity = velocity
-      self.rect = pygame.Rect(position, size)
+      super().__init__(position, speed, 0, type, image)
     def update(self):
       self.position = self.velocity+self.position
-    def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
     def calcvelocity(self, degrees, speed):
         self.degrees = degrees
         self.velocity.x = math.sin(math.radians(degrees)) * speed
