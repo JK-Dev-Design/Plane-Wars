@@ -7,16 +7,16 @@ screen = pygame.display.set_mode((800, 800))
 playerimg = pygame.image.load("src/Player.png")
 blackimg = pygame.image.load("src/BlackPlane.png")
 greenimg = pygame.image.load("src/GreenPlane.png")
+pbulletimg = pygame.image.load("src/P_Bullet_Rect.png")
 entity = entity.entity(pygame.Vector2(0, 700), 5, 10, 1, playerimg)
 pygame.display.set_caption("Plane Wars")
 moving_left = False
 moving_right = False
-fire_space = False
 bullets = []
 def fire():
   global bullets
 
-  b = bullet.bullet(entity.position.copy(), 1, 8, 1, blackimg, velocity=pygame.Vector2(0, -10))
+  b = bullet.bullet(entity.position.copy(), 1, 8, 1, pbulletimg, velocity=pygame.Vector2(0, -10))
   bullets.append(b)
 while True:
   ev = pygame.event.get()
@@ -32,15 +32,13 @@ while True:
       if pygame.K_RIGHT == event.key:
         moving_right = False
       if pygame.K_SPACE == event.key:
-        fire_spece = True
+        fire()
     if event.type == pygame.QUIT:
       pygame.quit()
   if moving_left == True:
     entity.position.x -= entity.speed #TypeError: unsupported operand type(s) for -=: 'float' and 'pygame.math.Vector2'
   if moving_right == True:
     entity.position.x += entity.speed
-  if fire_spece == True:
-    fire()
 
   screen.fill((255, 255, 255))
   entity.draw(screen)
