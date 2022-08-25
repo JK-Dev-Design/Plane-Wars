@@ -50,7 +50,8 @@ def spawn_enemies(amount):
     enemies.append(enemy)
     enemies.append(enemy2)
 
-
+def collide():
+  if 
 while True:
   
   ev = pygame.event.get()
