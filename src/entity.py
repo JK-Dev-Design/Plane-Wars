@@ -9,8 +9,9 @@ class entity:
     self.velocity = velocity
     self.rect = pygame.Rect(self.position, self.image.get_size())
   def draw(self, surface):
+    self.rect = pygame.Rect(self.position, self.image.get_size())
     surface.blit(self.image, self.position)
   def update(self):
     self.position = self.position + self.velocity
   def copy(self):
-    return entity(self.position, self.speed, self.health, self.type, self.image)
+    return entity(self.position, self.speed, self.health, self.type, self.image, velocity = self.velocity)

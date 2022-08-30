@@ -13,3 +13,6 @@ class bullet(entity.entity):
         self.degrees = degrees
         self.velocity.x = math.sin(math.radians(degrees)) * speed
         self.velocity.y = math.cos(math.radians(degrees)) * speed
+    def collide(self, rect):
+      col = self.rect.colliderect(rect)
+      return col
