@@ -7,16 +7,19 @@ import copy
 
 pygame.init()
 score = 0
+current_world = "main_world"
 coins_collected = 0
+collect_random = 0
 font_name = "arial"
 font = pygame.font.SysFont(font_name, 20)
 screen = pygame.display.set_mode((800, 800))
 playerimg = pygame.image.load("src/Player.png")
-# playerimg = pygame.transform.scale(
-#       playerimg, pygame.Vector2(playerimg.get_size()) / 6)
 blackimg = pygame.image.load("src/BlackPlane.png")
 greenimg = pygame.image.load("src/GreenPlane.png")
 coinimg = pygame.image.load("src/Coin.png")
+shieldimg = pygame.image.load("src/Shield.png")
+shield_boost = pygame.image.load("src/Shield_Boost.png")
+shield_re = pygame.image.load("src/Shield_Re.png")
 heartimg = pygame.image.load("src/Heart.png")
 pbulletimg = pygame.image.load("src/P_Bullet_Rect.png")
 targetimg_2 = pygame.image.load("src/peppa_pig.png")
@@ -25,10 +28,10 @@ targetimg_2 = pygame.transform.scale(
 targetimg = pygame.image.load("src/george.jpg")
 targetimg = pygame.transform.scale(
       targetimg, pygame.Vector2(targetimg.get_size()) / 7)
-player_entity = entity.entity(pygame.Vector2(0, 700), 5, 10, 1, playerimg)
+player_entity = entity.entity(pygame.Vector2(0, 700), 5, 5, 1, playerimg)
 peppa_entity = entity.entity(pygame.Vector2(0, 700), 5, 2, 1, targetimg_2)
 george_entity = entity.entity(pygame.Vector2(0, 700), 5, 5, 1, targetimg)
-collect_entity = entity.entity(pygame.Vector2(0, 0), 4, 0, 0, coinimg, velocity = pygame.Vector2(0, 1))
+collect_entity = entity.entity(pygame.Vector2(0, 0), 4, 0, 0, heartimg, velocity = pygame.Vector2(0, 1))
 bullet_clock = clock.clock()
 enemy_clock = clock.clock()
 pygame.display.set_caption("Plane Wars")
@@ -38,10 +41,10 @@ space_pressed = False
 bullets = []
 enemies = []
 coins = []
-bullet_offsetx = [[0], [4, -4]]
+bullet_offsetx = [[0], [6, -6]]
 current_upgrade = 1
 def fire():
-  if bullet_clock.time_passed() >= 0.3:
+  if bullet_clock.time_passed() >= 0.1:
     global bullets
     bullet_size = pygame.Vector2(playerimg.get_size()) / 2
     global b
@@ -65,7 +68,6 @@ def spawn_enemies(amount):
 
   
 while True:
-  
   ev = pygame.event.get()
   for event in ev:
     if event.type == pygame.KEYDOWN:
@@ -117,18 +119,31 @@ while True:
           enemies.remove(e)
           score+=1
           c = collect_entity.copy()
-          c.position = e.position.copy()
-          coins.append(c)
-
+          collect_random = random.randint(3, 7)
+          c.position = e.position.copy()    
+          if collect_random != 0:
+              c.position = e.position.copy()   
+              if collect_random == 1 or 2 or 3:
+                print(collect_random)
+                c.image = coinimg
+              if collect_random == 4:
+                c.image = heartimg
+                print("yo")
+              if collect_random == 5:
+                c.image = shieldimg
+              if collect_random == 6:
+                c.image = shield_boost
+              if collect_random == 7:
+                c.image = shield_re
+              coins.append(c)
+            
   for i in coins:
     i.draw(screen)
     i.update()
     if i.rect.colliderect(player_entity.rect):
       coins.remove(i)
       coins_collected += 1
-  current_upgrade = 2
   if coins_collected >= 3 and current_upgrade < 2:
     coins_collected = 0
     current_upgrade += 1
-
   pygame.display.flip()
