@@ -4,6 +4,9 @@ import bullet
 import clock
 import random
 import copy
+import sys
+
+quit = False
 
 pygame.init()
 score = 0
