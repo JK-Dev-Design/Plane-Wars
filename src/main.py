@@ -1,3 +1,5 @@
+
+      
 import pygame
 import entity
 import bullet
@@ -5,8 +7,8 @@ import clock
 import random
 import copy
 import sys
-
-quit = False
+ 
+quit = False 
 
 pygame.init()
 score = 0
@@ -57,7 +59,7 @@ def fire():
       b.velocity = pygame.Vector2(0, -10)
       bullets.append(b)
       bullet_clock.reset()
-
+ 
 def spawn_enemies(amount):
   for b in range(amount):
     enemy = george_entity.copy()
@@ -68,85 +70,90 @@ def spawn_enemies(amount):
     enemy2.velocity = pygame.Vector2(0, 1)
     enemies.append(enemy)
     enemies.append(enemy2)
-
+ 
+ 
+while not quit:
+  if current_world == "main_world":
+    ev = pygame.event.get()
+    for event in ev:
+      if event.type == pygame.KEYDOWN:
+        if pygame.K_LEFT == event.key:
+          moving_left = True
+        if pygame.K_RIGHT == event.key:
+          moving_right = True
+        if pygame.K_SPACE == event.key:
+          space_pressed = True
+      if event.type == pygame.KEYUP:
+        if pygame.K_LEFT == event.key:
+          moving_left = False
+        if pygame.K_RIGHT == event.key:
+          moving_right = False
+        if pygame.K_SPACE == event.key:
+          space_pressed = False
+        if pygame.K_s
   
-while True:
-  ev = pygame.event.get()
-  for event in ev:
-    if event.type == pygame.KEYDOWN:
-      if pygame.K_LEFT == event.key:
-        moving_left = True
-      if pygame.K_RIGHT == event.key:
-        moving_right = True
-      if pygame.K_SPACE == event.key:
-        space_pressed = True
-    if event.type == pygame.KEYUP:
-      if pygame.K_LEFT == event.key:
-        moving_left = False
-      if pygame.K_RIGHT == event.key:
-        moving_right = False
-      if pygame.K_SPACE == event.key:
-        space_pressed = False
-    if event.type == pygame.QUIT:
-      pygame.quit()
-  if moving_left == True:
-    player_entity.position.x -= player_entity.speed
-  if moving_right == True:
-    player_entity.position.x += player_entity.speed
-  if space_pressed == True:
-    fire()
-  if enemy_clock.time_passed() >= 3:
-    spawn_enemies(1)
-    enemy_clock.reset()
+      if event.type == pygame.QUIT:
+        quit = True
+  
+    if moving_left == True:
+      player_entity.position.x -= player_entity.speed
+    if moving_right == True:
+      player_entity.position.x += player_entity.speed
+    if space_pressed == True:
+      fire()
+    if enemy_clock.time_passed() >= 3:
+      spawn_enemies(1)
+      enemy_clock.reset()
+  
+    screen.fill((255, 255, 255))
+    score_surface = font.render(str(score), True, (0, 0, 0))
+    screen.blit(score_surface, (20, 20))
+    coins_collected_surface = font.render(str(coins_collected), True, (0, 0, 0))
+    screen.blit(coins_collected_surface, (20, 40))
+    for i in enemies:
+      i.draw(screen)
+      i.update()
+      if i.rect.colliderect(player_entity.rect):
+        enemies.remove(i)
+        player_entity.health -= 1
+        print(player_entity.health)
+  
+    player_entity.draw(screen)
+    for i in bullets:
+      i.draw(screen)
+      i.update()
+      for e in enemies:
+        i.collide(e.rect)
+        if i.rect.colliderect(e.rect) == True:
+          e.health -= i.damage
+          if e.health <= 0:
+            enemies.remove(e)
+            score+=1
+            c = collect_entity.copy()
+            collect_random = random.randint(3, 7)
+            c.position = e.position.copy()    
+            if collect_random != 0:
+                c.position = e.position.copy()   
+                if collect_random == 1 or 2 or 3:
 
-  screen.fill((255, 255, 255))
-  score_surface = font.render(str(score), True, (0, 0, 0))
-  screen.blit(score_surface, (20, 20))
-  coins_collected_surface = font.render(str(coins_collected), True, (0, 0, 0))
-  screen.blit(coins_collected_surface, (20, 40))
-  for i in enemies:
-    i.draw(screen)
-    i.update()
-    if i.rect.colliderect(player_entity.rect):
-      player_entity.health -= 1
-    
-  player_entity.draw(screen)
-  for i in bullets:
-    i.draw(screen)
-    i.update()
-    for e in enemies:
-      i.collide(e.rect)
-      if i.rect.colliderect(e.rect) == True:
-        e.health -= i.damage
-        if e.health <= 0:
-          enemies.remove(e)
-          score+=1
-          c = collect_entity.copy()
-          collect_random = random.randint(3, 7)
-          c.position = e.position.copy()    
-          if collect_random != 0:
-              c.position = e.position.copy()   
-              if collect_random == 1 or 2 or 3:
-                print(collect_random)
-                c.image = coinimg
-              if collect_random == 4:
-                c.image = heartimg
-                print("yo")
-              if collect_random == 5:
-                c.image = shieldimg
-              if collect_random == 6:
-                c.image = shield_boost
-              if collect_random == 7:
-                c.image = shield_re
-              coins.append(c)
-            
-  for i in coins:
-    i.draw(screen)
-    i.update()
-    if i.rect.colliderect(player_entity.rect):
-      coins.remove(i)
-      coins_collected += 1
-  if coins_collected >= 3 and current_upgrade < 2:
-    coins_collected = 0
-    current_upgrade += 1
-  pygame.display.flip()
+                  c.image = coinimg
+                if collect_random == 4:
+                  c.image = heartimg
+                if collect_random == 5:
+                  c.image = shieldimg
+                if collect_random == 6:
+                  c.image = shield_boost
+                if collect_random == 7:
+                  c.image = shield_re
+                coins.append(c)
+  
+    for i in coins:
+      i.draw(screen)
+      i.update()
+      if i.rect.colliderect(player_entity.rect):
+        coins.remove(i)
+        coins_collected += 1
+    if coins_collected >= 3 and current_upgrade < 2:
+      coins_collected = 0
+      current_upgrade += 1
+    pygame.display.flip()
